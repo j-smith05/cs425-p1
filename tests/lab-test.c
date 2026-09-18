@@ -24,6 +24,7 @@ typedef struct
 
   int fail_read;
   int fail_write;
+  size_t fail_write_after;
 } fake_server;
 
 
@@ -52,6 +53,10 @@ int fake_write(void *context, const char *buffer, size_t size)
   size_t amount = size;
 
   if (server->fail_write)
+    return -1;
+
+  if (server->fail_write_after != 0 &&
+      server->output_length >= server->fail_write_after)
     return -1;
 
   if (server->write_limit != 0 && amount > server->write_limit)
@@ -101,14 +106,22 @@ void test_pure_helpers(void)
   free(value);
 
   value = smtp_data("from@example.com", "to@example.com", "subject", "body");
-  TEST_ASSERT_EQUAL_STRING("From: from@example.com\r\nTo: to@example.com\r\n"
-                           "Subject: subject\r\n\r\nbody\r\n.\r\n",
-                           value);
+  TEST_ASSERT_EQUAL_STRING(
+      "From: from@example.com\r\n"
+      "To: to@example.com\r\n"
+      "Subject: subject\r\n\r\n"
+      "body\r\n.\r\n",
+      value);
   free(value);
 
   value = smtp_data("from", "to", "", "");
   TEST_ASSERT_NOT_NULL(value);
   TEST_ASSERT_NOT_NULL(strstr(value, "Subject: \r\n\r\n.\r\n"));
+  free(value);
+
+  value = smtp_data("from", "to", "subject", "body\n");
+  TEST_ASSERT_NOT_NULL(value);
+  TEST_ASSERT_NOT_NULL(strstr(value, "body\n.\r\n"));
   free(value);
 }
 
@@ -116,8 +129,15 @@ void test_pure_helpers(void)
 void test_reply_code_errors(void)
 {
   TEST_ASSERT_EQUAL_INT(-1, smtp_reply_code(NULL));
-  TEST_ASSERT_EQUAL_INT(-1, smtp_reply_code("2x0 bad\r\n"));
-  TEST_ASSERT_EQUAL_INT(-1, smtp_reply_code("25x bad\r\n"));
+
+  TEST_ASSERT_EQUAL_INT(-1, smtp_reply_code("/50 bad\r\n"));
+  TEST_ASSERT_EQUAL_INT(-1, smtp_reply_code(":50 bad\r\n"));
+
+  TEST_ASSERT_EQUAL_INT(-1, smtp_reply_code("2/0 bad\r\n"));
+  TEST_ASSERT_EQUAL_INT(-1, smtp_reply_code("2:0 bad\r\n"));
+
+  TEST_ASSERT_EQUAL_INT(-1, smtp_reply_code("25/ bad\r\n"));
+  TEST_ASSERT_EQUAL_INT(-1, smtp_reply_code("25: bad\r\n"));
 }
 
 
@@ -132,75 +152,145 @@ void test_dot_stuff_edges(void)
   value = smtp_dot_stuff("normal");
   TEST_ASSERT_EQUAL_STRING("normal", value);
   free(value);
+
+  value = smtp_dot_stuff("one\ntwo");
+  TEST_ASSERT_EQUAL_STRING("one\ntwo", value);
+  free(value);
+
+  value = smtp_dot_stuff(".");
+  TEST_ASSERT_EQUAL_STRING("..", value);
+  free(value);
 }
 
 
 void test_read_line_and_reply(void)
 {
-  fake_server server = {"250-first\r\n250 final\r\n", 0, 2, {0}, 0, 0, 0, 0};
+  fake_server server = {
+      "250-first\r\n250 final\r\n",
+      0, 2, {0}, 0, 0, 0, 0, 0
+  };
+
   smtp_transport transport = fake_transport(&server);
   char line[64];
   char reply[128];
 
   TEST_ASSERT_EQUAL_INT(-1, smtp_read_line(&transport, line, 0));
-  TEST_ASSERT_EQUAL_INT(11, smtp_read_line(&transport, line, sizeof(line)));
+
+  TEST_ASSERT_EQUAL_INT(
+      11,
+      smtp_read_line(&transport, line, sizeof(line)));
+
   TEST_ASSERT_EQUAL_STRING("250-first\r\n", line);
 
   server.input_position = 0;
   transport = fake_transport(&server);
 
-  TEST_ASSERT_EQUAL_INT(250, smtp_read_reply(&transport, reply, sizeof(reply)));
-  TEST_ASSERT_EQUAL_STRING("250-first\r\n250 final\r\n", reply);
+  TEST_ASSERT_EQUAL_INT(
+      250,
+      smtp_read_reply(&transport, reply, sizeof(reply)));
+
+  TEST_ASSERT_EQUAL_STRING(
+      "250-first\r\n250 final\r\n",
+      reply);
 }
 
 
 void test_read_errors(void)
 {
-  fake_server server = {"250 okay\r\n", 0, 0, {0}, 0, 0, 0, 0};
+  fake_server server = {
+      "250 okay\r\n",
+      0, 0, {0}, 0, 0, 0, 0, 0
+  };
+
   smtp_transport transport = fake_transport(&server);
   char line[4];
   char reply[4];
 
-  TEST_ASSERT_EQUAL_INT(-1, smtp_read_line(&transport, line, sizeof(line)));
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_read_line(&transport, line, sizeof(line)));
 
   server.input = "250 okay\r\n";
   server.input_position = 0;
-  TEST_ASSERT_EQUAL_INT(-1, smtp_read_reply(&transport, reply, sizeof(reply)));
+  transport = fake_transport(&server);
+
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_read_reply(&transport, reply, sizeof(reply)));
 
   server.input = "x\r\n";
   server.input_position = 0;
-  TEST_ASSERT_EQUAL_INT(-1, smtp_read_reply(&transport, reply, sizeof(reply)));
+  transport = fake_transport(&server);
 
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_read_reply(&transport, reply, sizeof(reply)));
+
+  server.input = "250 okay\r\n";
+  server.input_position = 0;
   server.fail_read = 1;
-  TEST_ASSERT_EQUAL_INT(-1, smtp_read_line(&transport, line, sizeof(line)));
+  transport = fake_transport(&server);
+
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_read_line(&transport, line, sizeof(line)));
+
+  server.input = "abc";
+  server.input_position = 0;
+  server.fail_read = 0;
+  transport = fake_transport(&server);
+
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_read_line(&transport, line, sizeof(line)));
 }
 
 
 void test_write_and_command_errors(void)
 {
-  fake_server server = {"250 okay\r\n", 0, 0, {0}, 0, 2, 0, 0};
+  fake_server server = {
+      "250 okay\r\n",
+      0, 0, {0}, 0, 2, 0, 0, 0
+  };
+
   smtp_transport transport = fake_transport(&server);
   char reply[64];
 
-  TEST_ASSERT_EQUAL_INT(0, smtp_write_all(&transport, "hello", 5));
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      smtp_write_all(&transport, "hello", 5));
+
   TEST_ASSERT_EQUAL_STRING("hello", server.output);
 
-  TEST_ASSERT_EQUAL_INT(0, smtp_send_command(&transport, "NOOP\r\n", 250,
-                                             reply, sizeof(reply)));
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      smtp_send_command(&transport, "NOOP\r\n", 250,
+                        reply, sizeof(reply)));
 
   server.fail_write = 1;
 
-  TEST_ASSERT_EQUAL_INT(-1, smtp_write_all(&transport, "x", 1));
-  TEST_ASSERT_EQUAL_INT(-1, smtp_send_command(&transport, "x", 250,
-                                              reply, sizeof(reply)));
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_write_all(&transport, "x", 1));
+
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_send_command(&transport, "x", 250,
+                        reply, sizeof(reply)));
 
   server.fail_write = 0;
   server.write_limit = 0;
   server.input = "";
   server.input_position = 0;
 
-  TEST_ASSERT_EQUAL_INT(-1, smtp_send_command(&transport, "x", 250,
-                                              reply, sizeof(reply)));
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_send_command(&transport, "x", 250,
+                        reply, sizeof(reply)));
+
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      smtp_write_all(&transport, "", 0));
 }
 
 
@@ -215,18 +305,29 @@ void test_session_success(void)
       0,
       3,
       0,
+      0,
       0
   };
 
   smtp_transport transport = fake_transport(&server);
 
-  TEST_ASSERT_EQUAL_INT(0, smtp_session(&transport, "from@example.com",
-                                        "to@example.com", "localhost", "hi",
-                                        ".line"));
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      smtp_session(&transport,
+                   "from@example.com",
+                   "to@example.com",
+                   "localhost",
+                   "hi",
+                   ".line"));
 
-  TEST_ASSERT_NOT_NULL(strstr(server.output, "HELO localhost\r\n"));
-  TEST_ASSERT_NOT_NULL(strstr(server.output, "..line"));
-  TEST_ASSERT_NOT_NULL(strstr(server.output, "QUIT\r\n"));
+  TEST_ASSERT_NOT_NULL(
+      strstr(server.output, "HELO localhost\r\n"));
+
+  TEST_ASSERT_NOT_NULL(
+      strstr(server.output, "..line"));
+
+  TEST_ASSERT_NOT_NULL(
+      strstr(server.output, "QUIT\r\n"));
 }
 
 
@@ -234,34 +335,131 @@ void test_session_wrong_statuses(void)
 {
   const char *responses[] = {
       "500 no\r\n",
-      "220 ready\r\n500 no\r\n",
-      "220 ready\r\n250 yes\r\n500 no\r\n",
-      "220 ready\r\n250 yes\r\n250 yes\r\n500 no\r\n",
-      "220 ready\r\n250 yes\r\n250 yes\r\n250 yes\r\n354 data\r\n500 no\r\n",
-      "220 ready\r\n250 yes\r\n250 yes\r\n250 yes\r\n500 no\r\n",
-      "220 ready\r\n250 yes\r\n250 yes\r\n250 yes\r\n354 data\r\n250 yes\r\n500 no\r\n"
+
+      "220 ready\r\n"
+      "500 no\r\n",
+
+      "220 ready\r\n"
+      "250 yes\r\n"
+      "500 no\r\n",
+
+      "220 ready\r\n"
+      "250 yes\r\n"
+      "250 yes\r\n"
+      "500 no\r\n",
+
+      "220 ready\r\n"
+      "250 yes\r\n"
+      "250 yes\r\n"
+      "250 yes\r\n"
+      "354 data\r\n"
+      "500 no\r\n",
+
+      "220 ready\r\n"
+      "250 yes\r\n"
+      "250 yes\r\n"
+      "250 yes\r\n"
+      "500 no\r\n",
+
+      "220 ready\r\n"
+      "250 yes\r\n"
+      "250 yes\r\n"
+      "250 yes\r\n"
+      "354 data\r\n"
+      "250 yes\r\n"
+      "500 no\r\n"
   };
 
   for (size_t index = 0;
        index < sizeof(responses) / sizeof(responses[0]);
        index++)
   {
-    fake_server server = {responses[index], 0, 0, {0}, 0, 0, 0, 0};
+    fake_server server = {
+        responses[index],
+        0, 0, {0}, 0, 0, 0, 0, 0
+    };
+
     smtp_transport transport = fake_transport(&server);
 
-    TEST_ASSERT_EQUAL_INT(-1,
-                          smtp_session(&transport, "a", "b", "c", "d", "e"));
+    TEST_ASSERT_EQUAL_INT(
+        -1,
+        smtp_session(&transport, "a", "b", "c", "d", "e"));
   }
 }
 
 
 void test_session_hangup(void)
 {
-  fake_server server = {"220 ready\r\n250 yes\r\n", 0, 0, {0}, 0, 0, 0, 0};
+  fake_server server = {
+      "220 ready\r\n250 yes\r\n",
+      0, 0, {0}, 0, 0, 0, 0, 0
+  };
+
   smtp_transport transport = fake_transport(&server);
 
-  TEST_ASSERT_EQUAL_INT(-1,
-                        smtp_session(&transport, "a", "b", "c", "d", "e"));
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_session(&transport, "a", "b", "c", "d", "e"));
+}
+
+
+void test_read_line_branch_cases(void)
+{
+  char line[64];
+
+  fake_server server1 = {
+      "aX",
+      0, 0, {0}, 0, 0, 0, 0, 0
+  };
+
+  smtp_transport transport1 = fake_transport(&server1);
+
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_read_line(&transport1, line, sizeof(line)));
+
+  fake_server server2 = {
+      "a\rX",
+      0, 0, {0}, 0, 0, 0, 0, 0
+  };
+
+  smtp_transport transport2 = fake_transport(&server2);
+
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_read_line(&transport2, line, sizeof(line)));
+}
+
+
+void test_session_data_write_failure(void)
+{
+  fake_server server = {
+      "220 ready\r\n"
+      "250 hello\r\n"
+      "250 from\r\n"
+      "250 to\r\n"
+      "354 data\r\n",
+      0,
+      0,
+      {0},
+      0,
+      0,
+      0,
+      0,
+      0
+  };
+
+  smtp_transport transport = fake_transport(&server);
+
+  server.fail_write_after =
+      strlen("HELO c\r\n") +
+      strlen("MAIL FROM:<a>\r\n") +
+      strlen("RCPT TO:<b>\r\n") +
+      strlen("DATA\r\n");
+
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_session(&transport, "a", "b", "c", "d", "e"));
 }
 
 
@@ -270,24 +468,40 @@ void test_socket_functions(void)
   int sockets[2];
   char buffer[8];
 
-  TEST_ASSERT_EQUAL_INT(0, socketpair(AF_UNIX, SOCK_STREAM, 0, sockets));
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      socketpair(AF_UNIX, SOCK_STREAM, 0, sockets));
 
-  TEST_ASSERT_EQUAL_INT(3, (int)write(sockets[1], "abc", 3));
-  TEST_ASSERT_EQUAL_INT(3,
-                        smtp_socket_read(&sockets[0], buffer, sizeof(buffer)));
+  TEST_ASSERT_EQUAL_INT(
+      3,
+      (int)write(sockets[1], "abc", 3));
+
+  TEST_ASSERT_EQUAL_INT(
+      3,
+      smtp_socket_read(&sockets[0], buffer, sizeof(buffer)));
+
   TEST_ASSERT_EQUAL_MEMORY("abc", buffer, 3);
 
-  TEST_ASSERT_EQUAL_INT(3, smtp_socket_write(&sockets[0], "xyz", 3));
-  TEST_ASSERT_EQUAL_INT(3, (int)read(sockets[1], buffer, sizeof(buffer)));
+  TEST_ASSERT_EQUAL_INT(
+      3,
+      smtp_socket_write(&sockets[0], "xyz", 3));
+
+  TEST_ASSERT_EQUAL_INT(
+      3,
+      (int)read(sockets[1], buffer, sizeof(buffer)));
 
   close(sockets[0]);
   close(sockets[1]);
 
   TEST_ASSERT_EQUAL_INT(
-      -1, smtp_connect("invalid.invalid", "25", &(smtp_transport){0}));
+      -1,
+      smtp_connect("invalid.invalid", "25",
+                   &(smtp_transport){0}));
 
   TEST_ASSERT_EQUAL_INT(
-      -1, smtp_connect("127.0.0.1", "1", &(smtp_transport){0}));
+      -1,
+      smtp_connect("127.0.0.1", "1",
+                   &(smtp_transport){0}));
 }
 
 
@@ -306,18 +520,31 @@ void test_socket_connect(void)
   TEST_ASSERT_TRUE(listener >= 0);
 
   TEST_ASSERT_EQUAL_INT(
-      0, bind(listener, (struct sockaddr *)&address, sizeof(address)));
-
-  TEST_ASSERT_EQUAL_INT(0, listen(listener, 1));
+      0,
+      bind(listener,
+           (struct sockaddr *)&address,
+           sizeof(address)));
 
   TEST_ASSERT_EQUAL_INT(
-      0, getsockname(listener, (struct sockaddr *)&address, &address_length));
+      0,
+      listen(listener, 1));
+
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      getsockname(listener,
+                  (struct sockaddr *)&address,
+                  &address_length));
 
   (void)snprintf(port, sizeof(port), "%u",
                  (unsigned)ntohs(address.sin_port));
 
-  TEST_ASSERT_EQUAL_INT(0, smtp_connect("127.0.0.1", port, &transport));
-  TEST_ASSERT_EQUAL_INT(0, smtp_close(&transport));
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      smtp_connect("127.0.0.1", port, &transport));
+
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      smtp_close(&transport));
 
   close(listener);
 }
@@ -329,14 +556,26 @@ void test_close(void)
   int *fd = malloc(sizeof(*fd));
   smtp_transport transport = {0};
 
-  TEST_ASSERT_EQUAL_INT(0, socketpair(AF_UNIX, SOCK_STREAM, 0, sockets));
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      socketpair(AF_UNIX, SOCK_STREAM, 0, sockets));
 
   *fd = sockets[0];
   transport.context = fd;
 
-  TEST_ASSERT_EQUAL_INT(0, smtp_close(&transport));
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      smtp_close(&transport));
+
   TEST_ASSERT_NULL(transport.context);
-  TEST_ASSERT_EQUAL_INT(0, smtp_close(NULL));
+
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      smtp_close(&transport));
+
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      smtp_close(NULL));
 
   close(sockets[1]);
 }
@@ -355,6 +594,8 @@ int main(void)
   RUN_TEST(test_session_success);
   RUN_TEST(test_session_wrong_statuses);
   RUN_TEST(test_session_hangup);
+  RUN_TEST(test_read_line_branch_cases);
+  RUN_TEST(test_session_data_write_failure);
   RUN_TEST(test_socket_functions);
   RUN_TEST(test_socket_connect);
   RUN_TEST(test_close);
