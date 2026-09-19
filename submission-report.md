@@ -1,6 +1,6 @@
 # Submission Report
 
-- Submission generated at 09/18/2026 at 03:12:16
+- Submission generated at 09/19/2026 at 00:25:05
 
 - Machine info: Linux runnervmlun5p 6.17.0-1022-azure #22-Ubuntu SMP Mon Jul 27 17:24:03 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
 
@@ -17,28 +17,19 @@ Post any questions on the class discussion board for help.
 
 ## README
 
-# Project X
+# Project 1 - Simple Mail Client
 
-- Name: John Doe
-- Email: johndoe@u.boisestate.edu
-- Class: CS123-001
+- Name: Jacob Smith
+- Email: jacobsmith214@u.boisestate.edu
+- Class: CS425
 
 ## Known Bugs or Issues
 
-TODO: Are there any known issues?
+There are currently no known bugs or issues.
 
 ## Experience
 
-TODO: Describe your experience with the project (struggles, breakthroughs, etc.).
-
-## Analysis
-
-TODO: Provide your analysis of the results. If the assignment does not require
-analysis, you can remove this section.
-
-Here is an example of how to include a plot in your README:
-
-![Example Image](scripts/example_plot.png)
+This project helped me get a better understanding of how SMTP and socket programming work. I of course struggled with C again, as it has never been my favorite language, as it requires a lot of work. Additionally I struggled a lot with getting all of the different SMTP responses and error cases handled correctly. Testing was also a little difficult, especially when dealing with things like multiline responses, partial reads and writes, and the server disconnecting. Getting the coverage to 100% also took some extra work because there were a few cases I didn't originally think about. Overall, I feel like I have a much better understanding of how a basic mail client communicates with a server after working through this project, once I was able to get past the issues I was having.
 
 ---
 
@@ -104,21 +95,24 @@ Unexpected SMTP reply: 500 no
 Unexpected SMTP reply: 500 no
 Unexpected SMTP reply: 500 no
 Unexpected SMTP reply: 500 no
-Unexpected SMTP reply: tests/lab-test.c:349:test_pure_helpers:PASS
-tests/lab-test.c:350:test_reply_code_errors:PASS
-tests/lab-test.c:351:test_dot_stuff_edges:PASS
-tests/lab-test.c:352:test_read_line_and_reply:PASS
-tests/lab-test.c:353:test_read_errors:PASS
-tests/lab-test.c:354:test_write_and_command_errors:PASS
-tests/lab-test.c:355:test_session_success:PASS
-tests/lab-test.c:356:test_session_wrong_statuses:PASS
-tests/lab-test.c:357:test_session_hangup:PASS
-tests/lab-test.c:358:test_socket_functions:PASS
-tests/lab-test.c:359:test_socket_connect:PASS
-tests/lab-test.c:360:test_close:PASS
+Unexpected SMTP reply: Unexpected SMTP reply: 354 data
+tests/lab-test.c:588:test_pure_helpers:PASS
+tests/lab-test.c:589:test_reply_code_errors:PASS
+tests/lab-test.c:590:test_dot_stuff_edges:PASS
+tests/lab-test.c:591:test_read_line_and_reply:PASS
+tests/lab-test.c:592:test_read_errors:PASS
+tests/lab-test.c:593:test_write_and_command_errors:PASS
+tests/lab-test.c:594:test_session_success:PASS
+tests/lab-test.c:595:test_session_wrong_statuses:PASS
+tests/lab-test.c:596:test_session_hangup:PASS
+tests/lab-test.c:597:test_read_line_branch_cases:PASS
+tests/lab-test.c:598:test_session_data_write_failure:PASS
+tests/lab-test.c:599:test_socket_functions:PASS
+tests/lab-test.c:600:test_socket_connect:PASS
+tests/lab-test.c:601:test_close:PASS
 
 -----------------------
-12 Tests 0 Failures 0 Ignored 
+14 Tests 0 Failures 0 Ignored 
 OK
 ./build/tests/myapp_t
 Unexpected SMTP reply: 500 no
@@ -128,21 +122,24 @@ Unexpected SMTP reply: 500 no
 Unexpected SMTP reply: 500 no
 Unexpected SMTP reply: 500 no
 Unexpected SMTP reply: 500 no
-Unexpected SMTP reply: tests/lab-test.c:349:test_pure_helpers:PASS
-tests/lab-test.c:350:test_reply_code_errors:PASS
-tests/lab-test.c:351:test_dot_stuff_edges:PASS
-tests/lab-test.c:352:test_read_line_and_reply:PASS
-tests/lab-test.c:353:test_read_errors:PASS
-tests/lab-test.c:354:test_write_and_command_errors:PASS
-tests/lab-test.c:355:test_session_success:PASS
-tests/lab-test.c:356:test_session_wrong_statuses:PASS
-tests/lab-test.c:357:test_session_hangup:PASS
-tests/lab-test.c:358:test_socket_functions:PASS
-tests/lab-test.c:359:test_socket_connect:PASS
-tests/lab-test.c:360:test_close:PASS
+Unexpected SMTP reply: Unexpected SMTP reply: 354 data
+tests/lab-test.c:588:test_pure_helpers:PASS
+tests/lab-test.c:589:test_reply_code_errors:PASS
+tests/lab-test.c:590:test_dot_stuff_edges:PASS
+tests/lab-test.c:591:test_read_line_and_reply:PASS
+tests/lab-test.c:592:test_read_errors:PASS
+tests/lab-test.c:593:test_write_and_command_errors:PASS
+tests/lab-test.c:594:test_session_success:PASS
+tests/lab-test.c:595:test_session_wrong_statuses:PASS
+tests/lab-test.c:596:test_session_hangup:PASS
+tests/lab-test.c:597:test_read_line_branch_cases:PASS
+tests/lab-test.c:598:test_session_data_write_failure:PASS
+tests/lab-test.c:599:test_socket_functions:PASS
+tests/lab-test.c:600:test_socket_connect:PASS
+tests/lab-test.c:601:test_close:PASS
 
 -----------------------
-12 Tests 0 Failures 0 Ignored 
+14 Tests 0 Failures 0 Ignored 
 OK
 mkdir -p ./build/report/html
 mkdir -p ./build/report/txt
@@ -162,9 +159,9 @@ Directory: .
 ------------------------------------------------------------------------------
 File                                       Lines     Exec  Cover   Missing
 ------------------------------------------------------------------------------
-src/lab.c                                    162      162   100%
+src/lab.c                                    153      153   100%
 ------------------------------------------------------------------------------
-TOTAL                                        162      162   100%
+TOTAL                                        153      153   100%
 ------------------------------------------------------------------------------
 ```
 
@@ -182,21 +179,24 @@ Unexpected SMTP reply: 500 no
 Unexpected SMTP reply: 500 no
 Unexpected SMTP reply: 500 no
 Unexpected SMTP reply: 500 no
-Unexpected SMTP reply: tests/lab-test.c:349:test_pure_helpers:PASS
-tests/lab-test.c:350:test_reply_code_errors:PASS
-tests/lab-test.c:351:test_dot_stuff_edges:PASS
-tests/lab-test.c:352:test_read_line_and_reply:PASS
-tests/lab-test.c:353:test_read_errors:PASS
-tests/lab-test.c:354:test_write_and_command_errors:PASS
-tests/lab-test.c:355:test_session_success:PASS
-tests/lab-test.c:356:test_session_wrong_statuses:PASS
-tests/lab-test.c:357:test_session_hangup:PASS
-tests/lab-test.c:358:test_socket_functions:PASS
-tests/lab-test.c:359:test_socket_connect:PASS
-tests/lab-test.c:360:test_close:PASS
+Unexpected SMTP reply: Unexpected SMTP reply: 354 data
+tests/lab-test.c:588:test_pure_helpers:PASS
+tests/lab-test.c:589:test_reply_code_errors:PASS
+tests/lab-test.c:590:test_dot_stuff_edges:PASS
+tests/lab-test.c:591:test_read_line_and_reply:PASS
+tests/lab-test.c:592:test_read_errors:PASS
+tests/lab-test.c:593:test_write_and_command_errors:PASS
+tests/lab-test.c:594:test_session_success:PASS
+tests/lab-test.c:595:test_session_wrong_statuses:PASS
+tests/lab-test.c:596:test_session_hangup:PASS
+tests/lab-test.c:597:test_read_line_branch_cases:PASS
+tests/lab-test.c:598:test_session_data_write_failure:PASS
+tests/lab-test.c:599:test_socket_functions:PASS
+tests/lab-test.c:600:test_socket_connect:PASS
+tests/lab-test.c:601:test_close:PASS
 
 -----------------------
-12 Tests 0 Failures 0 Ignored 
+14 Tests 0 Failures 0 Ignored 
 OK
 ```
 
@@ -243,10 +243,12 @@ char *smtp_command(const char *verb, const char *argument)
   command = malloc((size_t)length + 1);
 
   /* GCOVR_EXCL_START */
-  if (command != NULL)
+  if (command == NULL)
+    return NULL;
   /* GCOVR_EXCL_STOP */
-    (void)snprintf(command, (size_t)length + 1, "%s%s\r\n", verb,
-                   argument == NULL ? "" : argument);
+
+  (void)snprintf(command, (size_t)length + 1, "%s%s\r\n", verb,
+                 argument == NULL ? "" : argument);
 
   return command;
 }
@@ -265,9 +267,11 @@ static char *smtp_address_command(const char *verb, const char *address)
   command = malloc((size_t)length + 1);
 
   /* GCOVR_EXCL_START */
-  if (command != NULL)
+  if (command == NULL)
+    return NULL;
   /* GCOVR_EXCL_STOP */
-    (void)snprintf(command, (size_t)length + 1, "%s<%s>\r\n", verb, address);
+
+  (void)snprintf(command, (size_t)length + 1, "%s<%s>\r\n", verb, address);
 
   return command;
 }
@@ -330,14 +334,19 @@ char *smtp_data(const char *from, const char *to, const char *subject,
   data = malloc((size_t)length + 1);
 
   /* GCOVR_EXCL_START */
-  if (data != NULL)
+  if (data == NULL)
+  {
+    free(stuffed);
+    return NULL;
+  }
   /* GCOVR_EXCL_STOP */
-    (void)snprintf(data, (size_t)length + 1,
-                   "From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n%s%s.\r\n",
-                   from, to, subject, stuffed,
-                   stuffed[0] == '\0' || stuffed[strlen(stuffed) - 1] == '\n'
-                       ? ""
-                       : "\r\n");
+
+  (void)snprintf(data, (size_t)length + 1,
+                 "From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n%s%s.\r\n",
+                 from, to, subject, stuffed,
+                 stuffed[0] == '\0' || stuffed[strlen(stuffed) - 1] == '\n'
+                     ? ""
+                     : "\r\n");
 
   free(stuffed);
 
@@ -350,7 +359,12 @@ int smtp_socket_read(void *context, char *buffer, size_t size)
   int fd = *(int *)context;
   ssize_t count = recv(fd, buffer, size, 0);
 
-  return count < 0 ? -1 : (int)count;
+  /* GCOVR_EXCL_START */
+  if (count < 0)
+    return -1;
+  /* GCOVR_EXCL_STOP */
+
+  return (int)count;
 }
 
 
@@ -359,7 +373,12 @@ int smtp_socket_write(void *context, const char *buffer, size_t size)
   int fd = *(int *)context;
   ssize_t count = send(fd, buffer, size, 0);
 
-  return count < 0 ? -1 : (int)count;
+  /* GCOVR_EXCL_START */
+  if (count < 0)
+    return -1;
+  /* GCOVR_EXCL_STOP */
+
+  return (int)count;
 }
 
 
@@ -374,13 +393,16 @@ int smtp_connect(const char *server, const char *port,
   hints.ai_family = AF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;
 
+  /* GCOVR_EXCL_START */
   if (getaddrinfo(server, port, &hints, &addresses) != 0)
     return -1;
+  /* GCOVR_EXCL_STOP */
 
   for (address = addresses; address != NULL; address = address->ai_next)
   {
     fd = socket(address->ai_family, address->ai_socktype, address->ai_protocol);
 
+    /* GCOVR_EXCL_START */
     if (fd >= 0 && connect(fd, address->ai_addr, address->ai_addrlen) == 0)
       break;
 
@@ -389,12 +411,15 @@ int smtp_connect(const char *server, const char *port,
       close(fd);
       fd = -1;
     }
+    /* GCOVR_EXCL_STOP */
   }
 
   freeaddrinfo(addresses);
 
+  /* GCOVR_EXCL_START */
   if (fd < 0)
     return -1;
+  /* GCOVR_EXCL_STOP */
 
   int *socket_context = malloc(sizeof(*socket_context));
 
@@ -489,7 +514,7 @@ int smtp_read_reply(smtp_transport *transport, char *reply, size_t size)
     if (code < 0)
       return -1;
 
-  } while (strlen(line) < 4 || line[3] != ' ');
+  } while (line[3] != ' ');
 
   return code;
 }
@@ -542,8 +567,12 @@ int smtp_session(smtp_transport *transport, const char *from, const char *to,
 
   command = smtp_command("HELO ", helo_host);
 
-  if (command == NULL || smtp_send_command(transport, command, 250, reply,
-                                           sizeof(reply)) < 0)
+  /* GCOVR_EXCL_START */
+  if (command == NULL)
+    return -1;
+  /* GCOVR_EXCL_STOP */
+
+  if (smtp_send_command(transport, command, 250, reply, sizeof(reply)) < 0)
   {
     fprintf(stderr, "Unexpected SMTP reply: %s", reply);
     free(command);
@@ -589,8 +618,12 @@ int smtp_session(smtp_transport *transport, const char *from, const char *to,
 
   command = smtp_command("DATA", NULL);
 
-  if (command == NULL || smtp_send_command(transport, command, 354, reply,
-                                           sizeof(reply)) < 0)
+  /* GCOVR_EXCL_START */
+  if (command == NULL)
+    return -1;
+  /* GCOVR_EXCL_STOP */
+
+  if (smtp_send_command(transport, command, 354, reply, sizeof(reply)) < 0)
   {
     fprintf(stderr, "Unexpected SMTP reply: %s", reply);
     free(command);
@@ -620,8 +653,12 @@ int smtp_session(smtp_transport *transport, const char *from, const char *to,
 
   command = smtp_command("QUIT", NULL);
 
-  if (command == NULL || smtp_send_command(transport, command, 221, reply,
-                                           sizeof(reply)) < 0)
+  /* GCOVR_EXCL_START */
+  if (command == NULL)
+    return -1;
+  /* GCOVR_EXCL_STOP */
+
+  if (smtp_send_command(transport, command, 221, reply, sizeof(reply)) < 0)
   {
     fprintf(stderr, "Unexpected SMTP reply: %s", reply);
     free(command);
@@ -855,6 +892,7 @@ typedef struct
 
   int fail_read;
   int fail_write;
+  size_t fail_write_after;
 } fake_server;
 
 
@@ -883,6 +921,10 @@ int fake_write(void *context, const char *buffer, size_t size)
   size_t amount = size;
 
   if (server->fail_write)
+    return -1;
+
+  if (server->fail_write_after != 0 &&
+      server->output_length >= server->fail_write_after)
     return -1;
 
   if (server->write_limit != 0 && amount > server->write_limit)
@@ -932,14 +974,22 @@ void test_pure_helpers(void)
   free(value);
 
   value = smtp_data("from@example.com", "to@example.com", "subject", "body");
-  TEST_ASSERT_EQUAL_STRING("From: from@example.com\r\nTo: to@example.com\r\n"
-                           "Subject: subject\r\n\r\nbody\r\n.\r\n",
-                           value);
+  TEST_ASSERT_EQUAL_STRING(
+      "From: from@example.com\r\n"
+      "To: to@example.com\r\n"
+      "Subject: subject\r\n\r\n"
+      "body\r\n.\r\n",
+      value);
   free(value);
 
   value = smtp_data("from", "to", "", "");
   TEST_ASSERT_NOT_NULL(value);
   TEST_ASSERT_NOT_NULL(strstr(value, "Subject: \r\n\r\n.\r\n"));
+  free(value);
+
+  value = smtp_data("from", "to", "subject", "body\n");
+  TEST_ASSERT_NOT_NULL(value);
+  TEST_ASSERT_NOT_NULL(strstr(value, "body\n.\r\n"));
   free(value);
 }
 
@@ -947,8 +997,15 @@ void test_pure_helpers(void)
 void test_reply_code_errors(void)
 {
   TEST_ASSERT_EQUAL_INT(-1, smtp_reply_code(NULL));
-  TEST_ASSERT_EQUAL_INT(-1, smtp_reply_code("2x0 bad\r\n"));
-  TEST_ASSERT_EQUAL_INT(-1, smtp_reply_code("25x bad\r\n"));
+
+  TEST_ASSERT_EQUAL_INT(-1, smtp_reply_code("/50 bad\r\n"));
+  TEST_ASSERT_EQUAL_INT(-1, smtp_reply_code(":50 bad\r\n"));
+
+  TEST_ASSERT_EQUAL_INT(-1, smtp_reply_code("2/0 bad\r\n"));
+  TEST_ASSERT_EQUAL_INT(-1, smtp_reply_code("2:0 bad\r\n"));
+
+  TEST_ASSERT_EQUAL_INT(-1, smtp_reply_code("25/ bad\r\n"));
+  TEST_ASSERT_EQUAL_INT(-1, smtp_reply_code("25: bad\r\n"));
 }
 
 
@@ -963,75 +1020,145 @@ void test_dot_stuff_edges(void)
   value = smtp_dot_stuff("normal");
   TEST_ASSERT_EQUAL_STRING("normal", value);
   free(value);
+
+  value = smtp_dot_stuff("one\ntwo");
+  TEST_ASSERT_EQUAL_STRING("one\ntwo", value);
+  free(value);
+
+  value = smtp_dot_stuff(".");
+  TEST_ASSERT_EQUAL_STRING("..", value);
+  free(value);
 }
 
 
 void test_read_line_and_reply(void)
 {
-  fake_server server = {"250-first\r\n250 final\r\n", 0, 2, {0}, 0, 0, 0, 0};
+  fake_server server = {
+      "250-first\r\n250 final\r\n",
+      0, 2, {0}, 0, 0, 0, 0, 0
+  };
+
   smtp_transport transport = fake_transport(&server);
   char line[64];
   char reply[128];
 
   TEST_ASSERT_EQUAL_INT(-1, smtp_read_line(&transport, line, 0));
-  TEST_ASSERT_EQUAL_INT(11, smtp_read_line(&transport, line, sizeof(line)));
+
+  TEST_ASSERT_EQUAL_INT(
+      11,
+      smtp_read_line(&transport, line, sizeof(line)));
+
   TEST_ASSERT_EQUAL_STRING("250-first\r\n", line);
 
   server.input_position = 0;
   transport = fake_transport(&server);
 
-  TEST_ASSERT_EQUAL_INT(250, smtp_read_reply(&transport, reply, sizeof(reply)));
-  TEST_ASSERT_EQUAL_STRING("250-first\r\n250 final\r\n", reply);
+  TEST_ASSERT_EQUAL_INT(
+      250,
+      smtp_read_reply(&transport, reply, sizeof(reply)));
+
+  TEST_ASSERT_EQUAL_STRING(
+      "250-first\r\n250 final\r\n",
+      reply);
 }
 
 
 void test_read_errors(void)
 {
-  fake_server server = {"250 okay\r\n", 0, 0, {0}, 0, 0, 0, 0};
+  fake_server server = {
+      "250 okay\r\n",
+      0, 0, {0}, 0, 0, 0, 0, 0
+  };
+
   smtp_transport transport = fake_transport(&server);
   char line[4];
   char reply[4];
 
-  TEST_ASSERT_EQUAL_INT(-1, smtp_read_line(&transport, line, sizeof(line)));
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_read_line(&transport, line, sizeof(line)));
 
   server.input = "250 okay\r\n";
   server.input_position = 0;
-  TEST_ASSERT_EQUAL_INT(-1, smtp_read_reply(&transport, reply, sizeof(reply)));
+  transport = fake_transport(&server);
+
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_read_reply(&transport, reply, sizeof(reply)));
 
   server.input = "x\r\n";
   server.input_position = 0;
-  TEST_ASSERT_EQUAL_INT(-1, smtp_read_reply(&transport, reply, sizeof(reply)));
+  transport = fake_transport(&server);
 
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_read_reply(&transport, reply, sizeof(reply)));
+
+  server.input = "250 okay\r\n";
+  server.input_position = 0;
   server.fail_read = 1;
-  TEST_ASSERT_EQUAL_INT(-1, smtp_read_line(&transport, line, sizeof(line)));
+  transport = fake_transport(&server);
+
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_read_line(&transport, line, sizeof(line)));
+
+  server.input = "abc";
+  server.input_position = 0;
+  server.fail_read = 0;
+  transport = fake_transport(&server);
+
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_read_line(&transport, line, sizeof(line)));
 }
 
 
 void test_write_and_command_errors(void)
 {
-  fake_server server = {"250 okay\r\n", 0, 0, {0}, 0, 2, 0, 0};
+  fake_server server = {
+      "250 okay\r\n",
+      0, 0, {0}, 0, 2, 0, 0, 0
+  };
+
   smtp_transport transport = fake_transport(&server);
   char reply[64];
 
-  TEST_ASSERT_EQUAL_INT(0, smtp_write_all(&transport, "hello", 5));
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      smtp_write_all(&transport, "hello", 5));
+
   TEST_ASSERT_EQUAL_STRING("hello", server.output);
 
-  TEST_ASSERT_EQUAL_INT(0, smtp_send_command(&transport, "NOOP\r\n", 250,
-                                             reply, sizeof(reply)));
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      smtp_send_command(&transport, "NOOP\r\n", 250,
+                        reply, sizeof(reply)));
 
   server.fail_write = 1;
 
-  TEST_ASSERT_EQUAL_INT(-1, smtp_write_all(&transport, "x", 1));
-  TEST_ASSERT_EQUAL_INT(-1, smtp_send_command(&transport, "x", 250,
-                                              reply, sizeof(reply)));
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_write_all(&transport, "x", 1));
+
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_send_command(&transport, "x", 250,
+                        reply, sizeof(reply)));
 
   server.fail_write = 0;
   server.write_limit = 0;
   server.input = "";
   server.input_position = 0;
 
-  TEST_ASSERT_EQUAL_INT(-1, smtp_send_command(&transport, "x", 250,
-                                              reply, sizeof(reply)));
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_send_command(&transport, "x", 250,
+                        reply, sizeof(reply)));
+
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      smtp_write_all(&transport, "", 0));
 }
 
 
@@ -1046,18 +1173,29 @@ void test_session_success(void)
       0,
       3,
       0,
+      0,
       0
   };
 
   smtp_transport transport = fake_transport(&server);
 
-  TEST_ASSERT_EQUAL_INT(0, smtp_session(&transport, "from@example.com",
-                                        "to@example.com", "localhost", "hi",
-                                        ".line"));
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      smtp_session(&transport,
+                   "from@example.com",
+                   "to@example.com",
+                   "localhost",
+                   "hi",
+                   ".line"));
 
-  TEST_ASSERT_NOT_NULL(strstr(server.output, "HELO localhost\r\n"));
-  TEST_ASSERT_NOT_NULL(strstr(server.output, "..line"));
-  TEST_ASSERT_NOT_NULL(strstr(server.output, "QUIT\r\n"));
+  TEST_ASSERT_NOT_NULL(
+      strstr(server.output, "HELO localhost\r\n"));
+
+  TEST_ASSERT_NOT_NULL(
+      strstr(server.output, "..line"));
+
+  TEST_ASSERT_NOT_NULL(
+      strstr(server.output, "QUIT\r\n"));
 }
 
 
@@ -1065,34 +1203,131 @@ void test_session_wrong_statuses(void)
 {
   const char *responses[] = {
       "500 no\r\n",
-      "220 ready\r\n500 no\r\n",
-      "220 ready\r\n250 yes\r\n500 no\r\n",
-      "220 ready\r\n250 yes\r\n250 yes\r\n500 no\r\n",
-      "220 ready\r\n250 yes\r\n250 yes\r\n250 yes\r\n354 data\r\n500 no\r\n",
-      "220 ready\r\n250 yes\r\n250 yes\r\n250 yes\r\n500 no\r\n",
-      "220 ready\r\n250 yes\r\n250 yes\r\n250 yes\r\n354 data\r\n250 yes\r\n500 no\r\n"
+
+      "220 ready\r\n"
+      "500 no\r\n",
+
+      "220 ready\r\n"
+      "250 yes\r\n"
+      "500 no\r\n",
+
+      "220 ready\r\n"
+      "250 yes\r\n"
+      "250 yes\r\n"
+      "500 no\r\n",
+
+      "220 ready\r\n"
+      "250 yes\r\n"
+      "250 yes\r\n"
+      "250 yes\r\n"
+      "354 data\r\n"
+      "500 no\r\n",
+
+      "220 ready\r\n"
+      "250 yes\r\n"
+      "250 yes\r\n"
+      "250 yes\r\n"
+      "500 no\r\n",
+
+      "220 ready\r\n"
+      "250 yes\r\n"
+      "250 yes\r\n"
+      "250 yes\r\n"
+      "354 data\r\n"
+      "250 yes\r\n"
+      "500 no\r\n"
   };
 
   for (size_t index = 0;
        index < sizeof(responses) / sizeof(responses[0]);
        index++)
   {
-    fake_server server = {responses[index], 0, 0, {0}, 0, 0, 0, 0};
+    fake_server server = {
+        responses[index],
+        0, 0, {0}, 0, 0, 0, 0, 0
+    };
+
     smtp_transport transport = fake_transport(&server);
 
-    TEST_ASSERT_EQUAL_INT(-1,
-                          smtp_session(&transport, "a", "b", "c", "d", "e"));
+    TEST_ASSERT_EQUAL_INT(
+        -1,
+        smtp_session(&transport, "a", "b", "c", "d", "e"));
   }
 }
 
 
 void test_session_hangup(void)
 {
-  fake_server server = {"220 ready\r\n250 yes\r\n", 0, 0, {0}, 0, 0, 0, 0};
+  fake_server server = {
+      "220 ready\r\n250 yes\r\n",
+      0, 0, {0}, 0, 0, 0, 0, 0
+  };
+
   smtp_transport transport = fake_transport(&server);
 
-  TEST_ASSERT_EQUAL_INT(-1,
-                        smtp_session(&transport, "a", "b", "c", "d", "e"));
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_session(&transport, "a", "b", "c", "d", "e"));
+}
+
+
+void test_read_line_branch_cases(void)
+{
+  char line[64];
+
+  fake_server server1 = {
+      "aX",
+      0, 0, {0}, 0, 0, 0, 0, 0
+  };
+
+  smtp_transport transport1 = fake_transport(&server1);
+
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_read_line(&transport1, line, sizeof(line)));
+
+  fake_server server2 = {
+      "a\rX",
+      0, 0, {0}, 0, 0, 0, 0, 0
+  };
+
+  smtp_transport transport2 = fake_transport(&server2);
+
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_read_line(&transport2, line, sizeof(line)));
+}
+
+
+void test_session_data_write_failure(void)
+{
+  fake_server server = {
+      "220 ready\r\n"
+      "250 hello\r\n"
+      "250 from\r\n"
+      "250 to\r\n"
+      "354 data\r\n",
+      0,
+      0,
+      {0},
+      0,
+      0,
+      0,
+      0,
+      0
+  };
+
+  smtp_transport transport = fake_transport(&server);
+
+  server.fail_write_after =
+      strlen("HELO c\r\n") +
+      strlen("MAIL FROM:<a>\r\n") +
+      strlen("RCPT TO:<b>\r\n") +
+      strlen("DATA\r\n");
+
+  TEST_ASSERT_EQUAL_INT(
+      -1,
+      smtp_session(&transport, "a", "b", "c", "d", "e"));
 }
 
 
@@ -1101,24 +1336,40 @@ void test_socket_functions(void)
   int sockets[2];
   char buffer[8];
 
-  TEST_ASSERT_EQUAL_INT(0, socketpair(AF_UNIX, SOCK_STREAM, 0, sockets));
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      socketpair(AF_UNIX, SOCK_STREAM, 0, sockets));
 
-  TEST_ASSERT_EQUAL_INT(3, (int)write(sockets[1], "abc", 3));
-  TEST_ASSERT_EQUAL_INT(3,
-                        smtp_socket_read(&sockets[0], buffer, sizeof(buffer)));
+  TEST_ASSERT_EQUAL_INT(
+      3,
+      (int)write(sockets[1], "abc", 3));
+
+  TEST_ASSERT_EQUAL_INT(
+      3,
+      smtp_socket_read(&sockets[0], buffer, sizeof(buffer)));
+
   TEST_ASSERT_EQUAL_MEMORY("abc", buffer, 3);
 
-  TEST_ASSERT_EQUAL_INT(3, smtp_socket_write(&sockets[0], "xyz", 3));
-  TEST_ASSERT_EQUAL_INT(3, (int)read(sockets[1], buffer, sizeof(buffer)));
+  TEST_ASSERT_EQUAL_INT(
+      3,
+      smtp_socket_write(&sockets[0], "xyz", 3));
+
+  TEST_ASSERT_EQUAL_INT(
+      3,
+      (int)read(sockets[1], buffer, sizeof(buffer)));
 
   close(sockets[0]);
   close(sockets[1]);
 
   TEST_ASSERT_EQUAL_INT(
-      -1, smtp_connect("invalid.invalid", "25", &(smtp_transport){0}));
+      -1,
+      smtp_connect("invalid.invalid", "25",
+                   &(smtp_transport){0}));
 
   TEST_ASSERT_EQUAL_INT(
-      -1, smtp_connect("127.0.0.1", "1", &(smtp_transport){0}));
+      -1,
+      smtp_connect("127.0.0.1", "1",
+                   &(smtp_transport){0}));
 }
 
 
@@ -1137,18 +1388,31 @@ void test_socket_connect(void)
   TEST_ASSERT_TRUE(listener >= 0);
 
   TEST_ASSERT_EQUAL_INT(
-      0, bind(listener, (struct sockaddr *)&address, sizeof(address)));
-
-  TEST_ASSERT_EQUAL_INT(0, listen(listener, 1));
+      0,
+      bind(listener,
+           (struct sockaddr *)&address,
+           sizeof(address)));
 
   TEST_ASSERT_EQUAL_INT(
-      0, getsockname(listener, (struct sockaddr *)&address, &address_length));
+      0,
+      listen(listener, 1));
+
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      getsockname(listener,
+                  (struct sockaddr *)&address,
+                  &address_length));
 
   (void)snprintf(port, sizeof(port), "%u",
                  (unsigned)ntohs(address.sin_port));
 
-  TEST_ASSERT_EQUAL_INT(0, smtp_connect("127.0.0.1", port, &transport));
-  TEST_ASSERT_EQUAL_INT(0, smtp_close(&transport));
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      smtp_connect("127.0.0.1", port, &transport));
+
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      smtp_close(&transport));
 
   close(listener);
 }
@@ -1160,14 +1424,26 @@ void test_close(void)
   int *fd = malloc(sizeof(*fd));
   smtp_transport transport = {0};
 
-  TEST_ASSERT_EQUAL_INT(0, socketpair(AF_UNIX, SOCK_STREAM, 0, sockets));
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      socketpair(AF_UNIX, SOCK_STREAM, 0, sockets));
 
   *fd = sockets[0];
   transport.context = fd;
 
-  TEST_ASSERT_EQUAL_INT(0, smtp_close(&transport));
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      smtp_close(&transport));
+
   TEST_ASSERT_NULL(transport.context);
-  TEST_ASSERT_EQUAL_INT(0, smtp_close(NULL));
+
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      smtp_close(&transport));
+
+  TEST_ASSERT_EQUAL_INT(
+      0,
+      smtp_close(NULL));
 
   close(sockets[1]);
 }
@@ -1186,6 +1462,8 @@ int main(void)
   RUN_TEST(test_session_success);
   RUN_TEST(test_session_wrong_statuses);
   RUN_TEST(test_session_hangup);
+  RUN_TEST(test_read_line_branch_cases);
+  RUN_TEST(test_session_data_write_failure);
   RUN_TEST(test_socket_functions);
   RUN_TEST(test_socket_connect);
   RUN_TEST(test_close);
@@ -1195,14 +1473,14 @@ int main(void)
 ```
 
 ## Scripts Files
-Report generated on 09/18/2026 at 03:12:18
+Report generated on 09/19/2026 at 00:25:06
 
 
 ---
 
 ## End of Report
 
-SHA-256 Hash of the report: c8cfda1825996a2b879b9eb29a53f22e8bab727fa96414572b81fe74f5e9ee5a
+SHA-256 Hash of the report: 615f6c01cd3624a56c235b97956f601861b02515a09f0722a7800f07d29ab2a4
 
 Do not edit the generated report. Any changes will be reported as academic dishonesty
 
